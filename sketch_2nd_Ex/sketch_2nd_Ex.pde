@@ -39,19 +39,17 @@ class pathfinder {
 pathfinder[] paths;
 
 void setup() {
-  
   //Drawing the background
   size(600, 600);
-  //background(32, 41, 49) //put this in to leave a trail
   
   x= 0 - 90;
   y= random(600 - 90);
   
   frameRate(20);
   
-  //might need to add coin toss to decide whether sideways
-  
+  background(0);
   ellipseMode(CENTER);
+  fill(255);
   noStroke();
   smooth();
   paths = new pathfinder[1];
@@ -59,14 +57,11 @@ void setup() {
 }
 
 void draw() {
-  
-  background(0);
-  
   //The Plant??
-  fill(255);
   for (int i=0;i<paths.length;i++) {
     PVector loc = paths[i].location;
     float diam = paths[i].diameter;
+    fill(255);
     ellipse(loc.x, loc.y, diam, diam);
     paths[i].update();
   }
@@ -88,12 +83,13 @@ void draw() {
     else{
         for (int i=0; i<(downY); i++);
             //x,y,w,h
-            fill(151, 161, 156);
-            rect(x, y, 50, 50);
+            fill(230, 34, 43);
+            ellipse(x, y, 50, 50);
             //rect(x, height / downY + marginY, 50, 50);
             x = x + 1;
             //rect(20, i * height / downY + marginY, 20, height/ downY - marginY * 2)
     }
+  
 }
 
 void keyPressed(){
