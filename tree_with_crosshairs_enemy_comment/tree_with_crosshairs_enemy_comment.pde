@@ -13,6 +13,7 @@ PGraphics pg;
 
 //Image
 PImage img;
+PImage img2;
 
 //the x value
 int j, y;
@@ -21,7 +22,7 @@ float x;
 
 boolean have_defeated_enemy = false;
 
-boolean going_right = true;
+boolean going_right;
 
 //The tree, sets up the main branch and randomises location
 class pathfinder {
@@ -83,6 +84,7 @@ void setup() {
   
   //Loading the enemy in setup
   img = loadImage("Enemy_2.png");
+  img2 = loadImage("Enemy_2.png");
   //include random of x and y minus the size of the enemy like x= random(400 - 50)
   
   //Allows the enemy to move in its y axis
@@ -92,10 +94,10 @@ void setup() {
   
   //coin toss to decide whether left or right
   if (random(100) > 50){
-  going_right = false;
+  going_right = true;
   }
   else{
-  going_right = true;
+  going_right = false;
   }
   
 
@@ -117,19 +119,6 @@ void draw() {
   background(0); //always clears the canvas to black
   image(pg, 0, 0); //always redraw the PGraphic
   
-  /*
-  //if defeated enemy is false fill black, 
-  //else if my is greater than height or mx is greater than width, draw red
-  //else don't do anything
-  if (have_defeated_enemy){//has main priority over the elif
-    //fill(0);
-  } else if (my > height || mx > width){
-    fill(171, 40, 49); //red
-  } else {
-    //pass
-  }
-  */
-  
   //If enemy is defeated which is false or the mouse is within the enemy make defeated enemy true and fill black
   //else if defeat remains false draw enemy and move enemy across the screen
   if ((have_defeated_enemy) || (mouseX > mx && mouseX < mx + 50 && mouseY > my && mouseY < my + 50)) {
@@ -137,19 +126,23 @@ void draw() {
   fill(0);
   }
   else{
-    //img, x , y, w, h
-    image(img, j, my, 70, 70);//Draw img, j/mx , my/500, width, height)
-    j = j + 1; // Allows it to move along
-    }
-  
-    
-  if((have_defeated_enemy)){
     if (going_right){
-      x = x - 1;
-    }else{
-      x = x + 1;
+      //img, x , y, w, h
+      image(img, j, my, 70, 70);//Draw img, j/mx , my/500, width, height)
+      j = j + 1; // Allows it to move along
     }
+    else{
+      image(img2, j, my, 70, 70);//Draw img, j/mx , my/500, width, height)
+      j = j *-1; // Allows it to move along
     }
+  }
+  //so it stops moving
+  if ((!have_defeated_enemy) && (going_right)) {
+    j = j + 1; // increase the number to increase the speed
+  }
+  else{
+    j = j *-1;
+  }
   
   
   pg.beginDraw();
