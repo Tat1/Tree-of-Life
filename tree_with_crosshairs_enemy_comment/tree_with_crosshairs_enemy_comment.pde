@@ -6,9 +6,11 @@ PGraphics pg;
 //Image
 PImage img;
 PImage img2;
+PImage imgnew;
 
 //the x value
-int j, y;
+
+int mx, my;
 
 float x;
 
@@ -19,13 +21,10 @@ boolean going_right;
 
 int rad = 70;     
 
-float xpos, ypos;
-
-float xspeed = 1;
-float yspeed = 1;
-
 int xdirection = 1;
 int ydirection = 1;
+
+int have_hit =0;
 
 //The tree, sets up the main branch and randomises location
 class pathfinder {
@@ -88,14 +87,12 @@ void setup() {
   //Loading the enemy in setup
   img = loadImage("Enemy_2.png");
   img2 = loadImage("Enemy_2.png");
+  imgnew = loadImage("New_Enemy_1.png");
   //include random of x and y minus the size of the enemy like x= random(400 - 50)
   
   //Allows the enemy to move in its y axis
-  y = int(random(600-50));
-  
-  //allowing it to come in sideways
-  xpos = width/2;
-  ypos = height/2;
+  //y = int(random(600-50));
+
   
   
   //coin toss to decide whether left or right
@@ -108,8 +105,6 @@ void setup() {
  }
 
 void draw() {
-  int mx = j;    //x/j for the enemy
-  int my = y; //y for the enemy
   
   int pixelPos;
   int pixelValue; //  Packed RGB
@@ -123,30 +118,33 @@ void draw() {
   background(0); //always clears the canvas to black
   image(pg, 0, 0); //always redraw the PGraphic
   
-  xpos = xpos + ( xspeed * xdirection );
-  //ypos = ypos + ( yspeed * ydirection );
+  
   //If enemy is defeated which is false or the mouse is within the enemy make defeated enemy true and fill black
   //else if defeat remains false draw enemy and move enemy across the screen
   
-  if ((have_defeated_enemy) || (mouseX > mx && mouseX < mx + 50 && mouseY > my && mouseY < my + 50)) {
-  (have_defeated_enemy) = true;
-  fill(0);
+  if  (mouseX > mx && mouseX < mx + 50 && mouseY > my && mouseY < my + 50) {
+  if(random(100) > 50){
+  mx= 0;
+  xdirection = 1;
+  }else{
+    mx= (width-rad);
+    xdirection = -1; 
+  }
+  have_hit = 0;
+  my=(int)random(height-rad);
   }
   else{
-    //x,y,w,h
-    image(img, j, my, 70, 70);
-    j = j + 1;
-    }
-  
-  if ((have_defeated_enemy) || (mouseX > xpos && mouseX < xpos + rad && mouseY > ypos && mouseY < ypos + rad)) {
-  (have_defeated_enemy) = true;
-  fill(0);
-  }
-  else{
-    if (xpos > width-rad || xpos < rad) {
+    if (mx > width-rad || mx < 0) {
       xdirection *= -1;
+      have_hit = 0; 
     }
-    image(img, xpos, ypos, rad, rad);
+    if (have_hit == 1){
+      image(imgnew, mx, my, 70, 70);
+      mx = mx + xdirection;
+    }else{
+      image(img, mx, my, 70, 70);
+      mx = mx + xdirection;
+    }
   }
   
   
@@ -159,6 +157,7 @@ void draw() {
   //Can comment out later, showing where enemy hits tree
   if (pixelValue != 0) {               // Is the examined PGraphics pixel non-black? If so, yellow crosshairs.
     stroke(255, 255, 0);// yellow
+    (have_hit) = 1;
   } else {
     stroke(100, 100, 100);//Line colour grey before it intersects
   }
