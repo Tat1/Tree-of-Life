@@ -1,11 +1,3 @@
-/* We use the PGraphics instance for the imagery which builds over time (so we never want to
-   call background() on it.) The main graphics canvas is redrawn each time, so that we can
-   get an animated cross-hairs cursor. Whenever we clear the main canvas, we redraw the
-   accumulated PGraphics back onto it.
-  
-   Based on: https://processing.org/examples/creategraphics.html
- */
-
 //Lets it be recognised in setup and draw
 
 //Pgraphics
@@ -23,6 +15,17 @@ float x;
 boolean have_defeated_enemy = false;
 
 boolean going_right;
+
+
+int rad = 70;     
+
+float xpos, ypos;
+
+float xspeed = 1;
+float yspeed = 1;
+
+int xdirection = 1;
+int ydirection = 1;
 
 //The tree, sets up the main branch and randomises location
 class pathfinder {
@@ -91,6 +94,9 @@ void setup() {
   y = int(random(600-50));
   
   //allowing it to come in sideways
+  xpos = width/2;
+  ypos = height/2;
+  
   
   //coin toss to decide whether left or right
   if (random(100) > 50){
@@ -99,9 +105,7 @@ void setup() {
   else{
   going_right = false;
   }
-  
-
-}
+ }
 
 void draw() {
   int mx = j;    //x/j for the enemy
@@ -119,29 +123,30 @@ void draw() {
   background(0); //always clears the canvas to black
   image(pg, 0, 0); //always redraw the PGraphic
   
+  xpos = xpos + ( xspeed * xdirection );
+  //ypos = ypos + ( yspeed * ydirection );
   //If enemy is defeated which is false or the mouse is within the enemy make defeated enemy true and fill black
   //else if defeat remains false draw enemy and move enemy across the screen
+  
   if ((have_defeated_enemy) || (mouseX > mx && mouseX < mx + 50 && mouseY > my && mouseY < my + 50)) {
   (have_defeated_enemy) = true;
   fill(0);
   }
   else{
-    if (going_right){
-      //img, x , y, w, h
-      image(img, j, my, 70, 70);//Draw img, j/mx , my/500, width, height)
-      j = j + 1; // Allows it to move along
+    //x,y,w,h
+    image(img, j, my, 70, 70);
+    j = j + 1;
     }
-    else{
-      image(img2, j, my, 70, 70);//Draw img, j/mx , my/500, width, height)
-      j = j *-1; // Allows it to move along
-    }
-  }
-  //so it stops moving
-  if ((!have_defeated_enemy) && (going_right)) {
-    j = j + 1; // increase the number to increase the speed
+  
+  if ((have_defeated_enemy) || (mouseX > xpos && mouseX < xpos + rad && mouseY > ypos && mouseY < ypos + rad)) {
+  (have_defeated_enemy) = true;
+  fill(0);
   }
   else{
-    j = j *-1;
+    if (xpos > width-rad || xpos < rad) {
+      xdirection *= -1;
+    }
+    image(img, xpos, ypos, rad, rad);
   }
   
   
