@@ -12,7 +12,6 @@ PImage imgnew;
 
 int mx, my;
 
-float x;
 
 boolean have_defeated_enemy = false;
 
@@ -25,6 +24,8 @@ int xdirection = 1;
 int ydirection = 1;
 
 int have_hit =0;
+
+int total_hits= 0;
 
 //The tree, sets up the main branch and randomises location
 class pathfinder {
@@ -60,7 +61,6 @@ class pathfinder {
 pathfinder[] paths;
 
 
-
 void setup() {
   
   //Drawing the screen
@@ -70,7 +70,7 @@ void setup() {
   pg = createGraphics(600, 600);
   
   //slows down the animation
-  frameRate(20);
+  frameRate(10);
   
   // need to put in millis
   img = loadImage("title_page.png");
@@ -88,20 +88,6 @@ void setup() {
   img = loadImage("Enemy_2.png");
   img2 = loadImage("Enemy_2.png");
   imgnew = loadImage("New_Enemy_1.png");
-  //include random of x and y minus the size of the enemy like x= random(400 - 50)
-  
-  //Allows the enemy to move in its y axis
-  //y = int(random(600-50));
-
-  
-  
-  //coin toss to decide whether left or right
-  if (random(100) > 50){
-  going_right = true;
-  }
-  else{
-  going_right = false;
-  }
  }
 
 void draw() {
@@ -118,11 +104,21 @@ void draw() {
   background(0); //always clears the canvas to black
   image(pg, 0, 0); //always redraw the PGraphic
   
+  fill(0, total_hits);
+  rect(0, 0, width, height);
+  //Major IF the mouse is within the enemy:
   
-  //If enemy is defeated which is false or the mouse is within the enemy make defeated enemy true and fill black
-  //else if defeat remains false draw enemy and move enemy across the screen
+  //If random 100 is greater than 50 then
+  //mx is 0 and the x direction is 1 (comes from left to right)
+  //else mx should be within the screen and x direction is -1 (comes from the right to left)
   
-  if  (mouseX > mx && mouseX < mx + 50 && mouseY > my && mouseY < my + 50) {
+  //hit is set to 0(startup) and my is a random height within the screen
+  
+  //Major ELSE
+  //if defeat remains false draw enemy and move enemy across the screen
+  //
+  
+  if (mouseX > mx && mouseX < mx + 50 && mouseY > my && mouseY < my + 50) {
   if(random(100) > 50){
   mx= 0;
   xdirection = 1;
@@ -158,6 +154,7 @@ void draw() {
   if (pixelValue != 0) {               // Is the examined PGraphics pixel non-black? If so, yellow crosshairs.
     stroke(255, 255, 0);// yellow
     (have_hit) = 1;
+    (total_hits) += 1;
   } else {
     stroke(100, 100, 100);//Line colour grey before it intersects
   }
