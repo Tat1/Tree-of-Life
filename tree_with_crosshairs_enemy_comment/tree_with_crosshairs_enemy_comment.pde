@@ -1,3 +1,10 @@
+import org.openkinect.freenect.*;
+import org.openkinect.processing.*;
+
+// The kinect stuff is happening in another class
+KinectTracker tracker;
+Kinect kinect;
+
 //Lets it be recognised in setup and draw
 
 //Pgraphics
@@ -62,12 +69,16 @@ pathfinder[] paths;
 
 
 void setup() {
+  //Kinect
+  kinect = new Kinect(this);
+  tracker = new KinectTracker();
   
   //Drawing the screen
-  size(600, 600);
+  //size(800, 500);
+  fullScreen();
   
   //Creating the size of the PGraphic of the tree, making it the same size and location as the screen
-  pg = createGraphics(600, 600);
+  pg = createGraphics(width, height);
   
   //slows down the animation
   frameRate(10);
@@ -95,6 +106,12 @@ void draw() {
   int pixelPos;
   int pixelValue; //  Packed RGB
   
+  //Kinect
+  // Run the tracking analysis
+  tracker.track();
+  
+  // Let's draw the raw location
+  PVector v1 = tracker.getPos();
   
   //Draws the tree into the pGraphic, calls it from void tree
   pg.beginDraw();
@@ -103,6 +120,11 @@ void draw() {
   
   background(0); //always clears the canvas to black
   image(pg, 0, 0); //always redraw the PGraphic
+  //Tracker
+  fill(50, 100, 250, 200);
+  noStroke();
+  //Use the V1 as mouseX and V1y mouse y
+  ellipse(v1.x, v1.y, 20, 20);
   
   fill(0, total_hits);
   rect(0, 0, width, height);
@@ -118,7 +140,8 @@ void draw() {
   //if defeat remains false draw enemy and move enemy across the screen
   //
   
-  if (mouseX > mx && mouseX < mx + 50 && mouseY > my && mouseY < my + 50) {
+  //if (mouseX > mx && mouseX < mx + 50 && mouseY > my && mouseY < my + 50) {
+  if (v1.x > mx && v1.x < mx + 50 && v1.y > my && v1.y < my + 50) {
   if(random(100) > 50){
   mx= 0;
   xdirection = 1;
