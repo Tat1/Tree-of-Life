@@ -15,8 +15,7 @@ PImage img;
 PImage img2;
 PImage imgnew;
 
-//the x value
-
+//the x, y value
 int mx, my;
 
 
@@ -120,14 +119,16 @@ void draw() {
   
   background(0); //always clears the canvas to black
   image(pg, 0, 0); //always redraw the PGraphic
+  
   //Tracker
   fill(50, 100, 250, 200);
   noStroke();
-  //Use the V1 as mouseX and V1y mouse y
+  //Use the V1.x as mouseX and V1.y as mouseY
   ellipse(v1.x, v1.y, 20, 20);
   
   fill(0, total_hits);
   rect(0, 0, width, height);
+  
   //Major IF the mouse is within the enemy:
   
   //If random 100 is greater than 50 then
@@ -138,7 +139,6 @@ void draw() {
   
   //Major ELSE
   //if defeat remains false draw enemy and move enemy across the screen
-  //
   
   //if (mouseX > mx && mouseX < mx + 50 && mouseY > my && mouseY < my + 50) {
   if (v1.x > mx && v1.x < mx + 50 && v1.y > my && v1.y < my + 50) {
