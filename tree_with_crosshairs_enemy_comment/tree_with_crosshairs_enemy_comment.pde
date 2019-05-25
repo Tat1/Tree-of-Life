@@ -12,7 +12,8 @@ PGraphics pg;
 
 //Image
 PImage img;
-PImage img2;
+PImage imgwhite;
+PImage img21;
 PImage imgnew;
 
 //the x, y value
@@ -32,6 +33,11 @@ int ydirection = 1;
 int have_hit =0;
 
 int total_hits= 0;
+
+//Figures when each round starts 
+int roundStartTime = 0;
+int value = 0;
+int percentage = 0;
 
 //The tree, sets up the main branch and randomises location
 class pathfinder {
@@ -73,8 +79,8 @@ void setup() {
   tracker = new KinectTracker();
   
   //Drawing the screen
-  //size(800, 500);
-  fullScreen();
+  size(640, 480);
+  //fullScreen();
   
   //Creating the size of the PGraphic of the tree, making it the same size and location as the screen
   pg = createGraphics(width, height);
@@ -83,8 +89,8 @@ void setup() {
   frameRate(10);
   
   // need to put in millis
-  img = loadImage("title_page.png");
-  img = loadImage("end_page.png");
+  imgwhite = loadImage("whitetree.gif");
+  img21 = loadImage("end_page.png");
   
   //Setting up the Tree path and extra path
   ellipseMode(CENTER);
@@ -96,12 +102,10 @@ void setup() {
   
   //Loading the enemy in setup
   img = loadImage("Enemy_2.png");
-  img2 = loadImage("Enemy_2.png");
   imgnew = loadImage("New_Enemy_1.png");
  }
 
-void draw() {
-  
+void gameIsStillRunning(){
   int pixelPos;
   int pixelValue; //  Packed RGB
   
@@ -186,7 +190,16 @@ void draw() {
   noFill();
   rect(mx, 0, 0, height); //Draws the cross hair of x
   rect(0, my, width, 0);  //Draws the cross hair of y
+}
+
+void draw() {
+  if (millis()< 50000){
+    //image(img2, 0, 0); //always redraw the PGraphic
+    image(imgwhite, 0, 0, width, height);
+  } else {
+    gameIsStillRunning();
   }
+}
   
 void tree(){
   for (int i=0;i<paths.length;i++) {
