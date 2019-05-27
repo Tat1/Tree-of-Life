@@ -12,13 +12,13 @@ PGraphics pg;
 
 //Image
 PImage img;
-PImage imgwhite;
-PImage img21;
 PImage imgnew;
+PImage[] imgw = new PImage[9];
+PImage[] imgb = new PImage[9];
+PImage[] imgg = new PImage[9];
 
 //the x, y value
 int mx, my;
-
 
 boolean have_defeated_enemy = false;
 
@@ -27,17 +27,15 @@ boolean going_right;
 
 int rad = 70;     
 
+float xspeed = 1;  // Speed of the enemy
+
 int xdirection = 1;
 int ydirection = 1;
 
-int have_hit =0;
+int have_hit = 0;
 
-int total_hits= 0;
+int total_hits = 0;
 
-//Figures when each round starts 
-int roundStartTime = 0;
-int value = 0;
-int percentage = 0;
 
 //The tree, sets up the main branch and randomises location
 class pathfinder {
@@ -86,11 +84,44 @@ void setup() {
   pg = createGraphics(width, height);
   
   //slows down the animation
-  frameRate(10);
+  frameRate(2);
   
   // need to put in millis
-  imgwhite = loadImage("whitetree.gif");
-  img21 = loadImage("end_page.png");
+  //imgw = loadImage("whitetree.gif");
+  //Start Screen
+  imgw[0] = loadImage( "whitetree1.gif" );
+  imgw[1] = loadImage( "whitetree2.gif" );
+  imgw[2] = loadImage( "whitetree3.gif" );
+  imgw[3] = loadImage( "whitetree4.gif" );
+  imgw[4] = loadImage( "whitetree5.gif" );
+  imgw[5] = loadImage( "whitetree6.gif" );
+  imgw[6] = loadImage( "whitetree7.gif" );
+  imgw[7] = loadImage( "whitetree8.gif" );
+  imgw[8] = loadImage( "whitetree9.gif" );
+  
+  //imgb = loadImage("blacktree.gif");
+  //Lose Screen
+  imgb[0] = loadImage( "blacktree1.gif" );
+  imgb[1] = loadImage( "blacktree2.gif" );
+  imgb[2] = loadImage( "blacktree3.gif" );
+  imgb[3] = loadImage( "blacktree4.gif" );
+  imgb[4] = loadImage( "blacktree5.gif" );
+  imgb[5] = loadImage( "blacktree6.gif" );
+  imgb[6] = loadImage( "blacktree7.gif" );
+  imgb[7] = loadImage( "blacktree8.gif" );
+  imgb[8] = loadImage( "blacktree9.gif" );
+  
+  //imgg = loadImage("goldtree.gif");
+  //Win Screen
+  imgg[0] = loadImage( "goldtree1.gif" );
+  imgg[1] = loadImage( "goldtree2.gif" );
+  imgg[2] = loadImage( "goldtree3.gif" );
+  imgg[3] = loadImage( "goldtree4.gif" );
+  imgg[4] = loadImage( "goldtree5.gif" );
+  imgg[5] = loadImage( "goldtree6.gif" );
+  imgg[6] = loadImage( "goldtree7.gif" );
+  imgg[7] = loadImage( "goldtree8.gif" );
+  imgg[8] = loadImage( "goldtree9.gif" );
   
   //Setting up the Tree path and extra path
   ellipseMode(CENTER);
@@ -125,7 +156,7 @@ void gameIsStillRunning(){
   image(pg, 0, 0); //always redraw the PGraphic
   
   //Tracker
-  fill(50, 100, 250, 200);
+  fill(255, 211, 2, 200);//Gold
   noStroke();
   //Use the V1.x as mouseX and V1.y as mouseY
   ellipse(v1.x, v1.y, 20, 20);
@@ -149,9 +180,13 @@ void gameIsStillRunning(){
   if(random(100) > 50){
   mx= 0;
   xdirection = 1;
+  xspeed = xspeed + 1;
+  println(xspeed);
   }else{
     mx= (width-rad);
     xdirection = -1; 
+    xspeed = xspeed + 1;
+    println(xspeed);
   }
   have_hit = 0;
   my=(int)random(height-rad);
@@ -159,16 +194,19 @@ void gameIsStillRunning(){
   else{
     if (mx > width-rad || mx < 0) {
       xdirection *= -1;
-      have_hit = 0; 
+      have_hit = 0;
     }
     if (have_hit == 1){
+      total_hits = total_hits +1;
+      println(total_hits);
       image(imgnew, mx, my, 70, 70);
-      mx = mx + xdirection;
+      mx = mx + ( (int)xspeed * xdirection );
     }else{
       image(img, mx, my, 70, 70);
-      mx = mx + xdirection;
+      mx = mx + ( (int)xspeed * xdirection );
     }
   }
+  
   
   
   pg.beginDraw();
@@ -193,10 +231,14 @@ void gameIsStillRunning(){
 }
 
 void draw() {
-  if (millis()< 50000){
-    //image(img2, 0, 0); //always redraw the PGraphic
-    image(imgwhite, 0, 0, width, height);
+  if (millis()< 6000){
+    image(imgw[frameCount%9], 0, 0, 640, 480);
   } else {
+    /*if (pg.ellipse(loc.x)>height){
+    image(imgg[frameCount%9], 0, 0, 640, 480);
+  }
+    else{
+    */
     gameIsStillRunning();
   }
 }
