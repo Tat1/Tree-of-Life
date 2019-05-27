@@ -84,7 +84,7 @@ void setup() {
   pg = createGraphics(width, height);
   
   //slows down the animation
-  frameRate(2);
+  frameRate(3);
   
   // need to put in millis
   //imgw = loadImage("whitetree.gif");
@@ -180,13 +180,14 @@ void gameIsStillRunning(){
   if(random(100) > 50){
   mx= 0;
   xdirection = 1;
-  xspeed = xspeed + 1;
-  println(xspeed);
+  xspeed = xspeed + 30;
+  total_hits=0;
+  println("xspeedleft",xspeed);
   }else{
     mx= (width-rad);
     xdirection = -1; 
     xspeed = xspeed + 1;
-    println(xspeed);
+    println("xspeedright", xspeed);
   }
   have_hit = 0;
   my=(int)random(height-rad);
@@ -195,18 +196,21 @@ void gameIsStillRunning(){
     if (mx > width-rad || mx < 0) {
       xdirection *= -1;
       have_hit = 0;
+      total_hits = total_hits + 30;
     }
     if (have_hit == 1){
-      total_hits = total_hits +1;
-      println(total_hits);
+      println("total_hitsred",total_hits);
+      println("have_hitred",have_hit);
       image(imgnew, mx, my, 70, 70);
       mx = mx + ( (int)xspeed * xdirection );
     }else{
+      println("total_hitswhite",total_hits);
+      println("have_hitwhite",have_hit);
       image(img, mx, my, 70, 70);
       mx = mx + ( (int)xspeed * xdirection );
     }
+    //total_hits = total_hits +1;
   }
-  
   
   
   pg.beginDraw();
@@ -219,15 +223,18 @@ void gameIsStillRunning(){
   if (pixelValue != 0) {               // Is the examined PGraphics pixel non-black? If so, yellow crosshairs.
     stroke(255, 255, 0);// yellow
     (have_hit) = 1;
+    //(total_hits) = 1;
     (total_hits) += 1;
   } else {
-    stroke(100, 100, 100);//Line colour grey before it intersects
+    //stroke(100, 100, 100);//Line colour grey before it intersects
   }
   
+  /*
   // (Re)draw crosshairs.
   noFill();
   rect(mx, 0, 0, height); //Draws the cross hair of x
   rect(0, my, width, 0);  //Draws the cross hair of y
+  */
 }
 
 void draw() {
