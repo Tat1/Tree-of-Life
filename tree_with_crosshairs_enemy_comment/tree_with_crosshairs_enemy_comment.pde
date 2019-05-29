@@ -45,7 +45,7 @@ class pathfinder {
   pathfinder() {
     location = new PVector(width/2, height);
     velocity = new PVector(0, -1);
-    diameter = 32;
+    diameter = 40;
   }
   pathfinder(pathfinder parent) {
     location = parent.location.get();
@@ -77,14 +77,14 @@ void setup() {
   tracker = new KinectTracker();
   
   //Drawing the screen
-  size(640, 480);
-  //fullScreen();
+  //size(640, 480);
+  fullScreen();
   
   //Creating the size of the PGraphic of the tree, making it the same size and location as the screen
   pg = createGraphics(width, height);
   
   //slows down the animation
-  frameRate(3);
+  frameRate(30);
   
   // need to put in millis
   //imgw = loadImage("whitetree.gif");
@@ -134,6 +134,7 @@ void setup() {
   //Loading the enemy in setup
   img = loadImage("Enemy_2.png");
   imgnew = loadImage("New_Enemy_1.png");
+  
  }
 
 void gameIsStillRunning(){
@@ -155,64 +156,59 @@ void gameIsStillRunning(){
   background(0); //always clears the canvas to black
   image(pg, 0, 0); //always redraw the PGraphic
   
-  //Tracker
-  fill(255, 211, 2, 200);//Gold
-  noStroke();
-  //Use the V1.x as mouseX and V1.y as mouseY
-  ellipse(v1.x, v1.y, 20, 20);
-  
   fill(0, total_hits);
   rect(0, 0, width, height);
   
-  //Major IF the mouse is within the enemy:
+    //Tracker
+  fill(255, 211, 2, 200);//Gold
+  noStroke();
+  //Use the V1.x as mouseX and V1.y as mouseY
   
-  //If random 100 is greater than 50 then
-  //mx is 0 and the x direction is 1 (comes from left to right)
-  //else mx should be within the screen and x direction is -1 (comes from the right to left)
+  //makes the kinect tracking full screen
+  float xscale = displayWidth/640.0;
+  float yscale = displayHeight/480.0;
   
-  //hit is set to 0(startup) and my is a random height within the screen
+  ellipse(v1.x*xscale, v1.y*yscale, 20, 20);
+  //println(v1.x);
   
-  //Major ELSE
-  //if defeat remains false draw enemy and move enemy across the screen
+  // Kinect Tracking hitting the enemy bounds
+  //Setting up the coin toss for whcih side (right or left side of x) the enemy is going to come in through
+  //Saves when its hit the tree once going in one direction then resets
+  //Draws randomly in the y axis where the enemy will appear
+  //xspeed increasing the enemies speed
   
   //if (mouseX > mx && mouseX < mx + 50 && mouseY > my && mouseY < my + 50) {
-  if (v1.x > mx && v1.x < mx + 50 && v1.y > my && v1.y < my + 50) {
+  if (v1.x*xscale > mx && v1.x*xscale < mx + 70 && v1.y*yscale > my && v1.y*yscale < my + 70) {
   if(random(100) > 50){
-  mx= 0;
+    mx=0;
   xdirection = 1;
-  xspeed = xspeed + 30;
-  total_hits=0;
-  println("xspeedleft",xspeed);
+  xspeed = xspeed + 1;
+  //total_hits = 0;
+  //println("xspeedleft",xspeed);
   }else{
     mx= (width-rad);
     xdirection = -1; 
     xspeed = xspeed + 1;
-    println("xspeedright", xspeed);
+    //println("xspeedright", xspeed);
   }
   have_hit = 0;
-  my=(int)random(height-rad);
+  my=(int)random((height)-rad);
   }
   else{
     if (mx > width-rad || mx < 0) {
       xdirection *= -1;
       have_hit = 0;
-      total_hits = total_hits + 30;
     }
     if (have_hit == 1){
-      println("total_hitsred",total_hits);
-      println("have_hitred",have_hit);
       image(imgnew, mx, my, 70, 70);
       mx = mx + ( (int)xspeed * xdirection );
     }else{
-      println("total_hitswhite",total_hits);
-      println("have_hitwhite",have_hit);
       image(img, mx, my, 70, 70);
       mx = mx + ( (int)xspeed * xdirection );
     }
-    //total_hits = total_hits +1;
   }
-  
-  
+  //println(my, "my");
+ // println(mx, "mx");
   pg.beginDraw();
   pg.loadPixels();
   pixelPos = my * width + mx;          //y direction times width + x direction
@@ -220,11 +216,10 @@ void gameIsStillRunning(){
   pg.endDraw();
   
   //Can comment out later, showing where enemy hits tree
-  if (pixelValue != 0) {               // Is the examined PGraphics pixel non-black? If so, yellow crosshairs.
-    stroke(255, 255, 0);// yellow
+  if ((pixelValue != 0) &&(have_hit==0)){               // Is the examined PGraphics pixel non-black?
+    //stroke(255, 255, 0);// yellow
     (have_hit) = 1;
-    //(total_hits) = 1;
-    (total_hits) += 1;
+    total_hits = total_hits + 50;
   } else {
     //stroke(100, 100, 100);//Line colour grey before it intersects
   }
@@ -237,20 +232,27 @@ void gameIsStillRunning(){
   */
 }
 
+//Drawing the gif for the different splash page screens
 void draw() {
-  if (millis()< 6000){
-    image(imgw[frameCount%9], 0, 0, 640, 480);
-  } else {
-    /*if (pg.ellipse(loc.x)>height){
-    image(imgg[frameCount%9], 0, 0, 640, 480);
+  if (millis()< 3500){
+    image(imgw[frameCount%9], 0, 0, width, height);
   }
-    else{
-    */
-    gameIsStillRunning();
+  else {
+    if ((frameCount>8000)){
+      image(imgg[frameCount%9], 0, 0, width, height);
+    } else{
+      if(total_hits > 255){ 
+        image(imgb[frameCount%9], 0, 0, width, height);
+      } else {
+        gameIsStillRunning();
+      }
+    }
   }
 }
   
 void tree(){
+  if(frameCount%10==0) {
+    println(frameCount);
   for (int i=0;i<paths.length;i++) {
     //stroke(255);
     PVector loc = paths[i].location;
@@ -262,12 +264,5 @@ void tree(){
     pg.ellipse(loc.x, loc.y, diam, diam);
     paths[i].update();
   }
-}
-
-//For the restart
-void keyPressed(){
-    print ("key Pressed");
-    background(0);
-    paths = new pathfinder[1];
-    paths[0] = new pathfinder();
+  }
 }
